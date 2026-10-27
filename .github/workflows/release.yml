@@ -1,0 +1,50 @@
+name: PDFs bauen und Release "latest" aktualisieren
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Schrift und Python-Pakete installieren
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-dejavu-core
+          pip install -r requirements.txt
+
+      - name: Gewinnquoten aller Editionen simulieren
+        run: python3 balancing.py 800
+
+      - name: Spielmaterial bauen
+        run: python3 build_all.py
+
+      - name: Zip schnüren
+        run: |
+          mkdir -p dist/Wald2080_Spielmaterial
+          cp -r out/*.pdf out/*.csv out/Editionen dist/Wald2080_Spielmaterial/
+          cp LIESMICH.txt dist/Wald2080_Spielmaterial/
+          (cd dist && zip -qr Wald2080_Spielmaterial.zip Wald2080_Spielmaterial)
+          cp out/*.pdf dist/
+
+      - name: Release "latest" neu anlegen
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete latest --cleanup-tag --yes || true
+          gh release create latest dist/Wald2080_Spielmaterial.zip dist/*.pdf \
+            --title "Wald 2080 – aktueller Stand" \
+            --notes "Automatisch gebaut aus Commit ${GITHUB_SHA::7}. Alle PDFs, Editionen und CSVs im ZIP." \
+            --target "$GITHUB_SHA" --latest

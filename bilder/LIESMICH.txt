@@ -1,0 +1,17 @@
+BILDER FÜR DIE BAUMKARTEN
+=========================
+Pro Baumart eine Datei  <id>.jpg  (oder .png/.webp)  in diesen Ordner legen, z. B. fichte.jpg, buche.jpg.
+Die IDs stehen in quellen.csv (Spalte "id") und in daten_baumarten.csv.
+
+Format: Querformat, mindestens 1000 px breit. Das Programm schneidet mittig auf 59,4 x 42 mm (Karte)
+bzw. 26 x 12 mm (Etikett) zu und rechnet auf 300 dpi herunter. Ein Bild reicht für Karte UND Etikett.
+
+Lizenz: nur CC0, Public Domain, CC BY, CC BY-SA. Bei CC BY / CC BY-SA ist die Namensnennung Pflicht:
+Urheber und Lizenz in quellen.csv eintragen – sie erscheinen klein auf der Kartenrückseite und
+vollständig in 13_Bildquellen.pdf.
+
+Automatisch holen (auf einem Rechner mit Internet):   python3 bilder_holen.py
+Danach jedes Bild ansehen (richtige Art?) und in quellen.csv "geprueft" auf "ja" setzen.
+
+Neu bauen:   python3 build_all.py
+Fehlt ein Bild, druckt die Karte einen Platzhalter ("Foto folgt").

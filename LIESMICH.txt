@@ -1,0 +1,54 @@
+WALD 2080 – Spielmaterial v0.4
+==============================
+
+INHALT
+  01_Regelheft.pdf                    Spielregeln, Balance-Hinweise, Druckhinweise
+  02–05_Baumkarten_*.pdf              Baumkarten, Vorder- UND Rückseite (Foto + Verbreitungskarte), 81 Arten
+  06_Standortkarten_alle.pdf          alle 221 Standortkarten (besser: die Edition der eigenen Region drucken)
+  07_Ereigniskarten.pdf               Ereigniskarten + einheitliche Rückseite
+  08_Fachkarten.pdf                   Fachkarten + einheitliche Rückseite
+  09_Revierplan_A3.pdf / 10_Leitstelle_A3.pdf
+  11_Baum-Etiketten.pdf               162 Etiketten, Vorder- und Rückseite (Rückseite = Baumbild)
+  12_Spielleitung_Uebersicht.pdf      Editionen, alle Baumarten, alle Standorte
+  13_Bildquellen.pdf                  Bildnachweis / Lizenzen
+  Editionen/                          31 Editionen: je Bundesland/Region ein PDF (Steckbrief + Standortkarten)
+  daten_*.csv                         alle Daten als Tabellen
+  Daten_und_Quellcode/                Quellcode und Daten zum Erweitern
+
+DRUCKEN
+  * A4, 100 %, KEINE Seitenanpassung. Papier 200–250 g.
+  * Karten mit Rückseite: BEIDSEITIG drucken, "Wenden an der langen Kante". Die Rückseiten sind spaltengespiegelt
+    (Vorderseite 1 2 3 / 4 5 6 / 7 8 9, Rückseite 3 2 1 / 6 5 4 / 9 8 7) – Vorder- und Rückseite liegen exakt übereinander.
+    Vorher eine Probeseite drucken und gegen das Licht halten.
+  * Anschnitt: Die Kartenfarbe läuft 2 mm über die Schnittkante (Etiketten 1 mm). An den Schneidemarken am Rand schneiden,
+    dann gibt es keinen weißen Rand. Zwischen den Karten liegt ein Streifen von 4 mm (2 x Anschnitt), den man wegschneidet.
+  * Ecken abrunden: Eckenrunder mit ca. 3–3,5 mm Radius. Alle Texte haben genügend Abstand zu den Ecken.
+  * Die Stapelmarkierungen auf der Leitstelle haben dieselbe Rundung.
+
+NEUE EDITION (Bundesland/Region) ANLEGEN – ohne andere Dateien zu berühren
+  1. Daten_und_Quellcode/regions/_VORLAGE.py kopieren nach regions/<land>/<kuerzel>.py
+  2. Kopf ausfüllen: Kürzel (ASCII, eindeutig), Name, Farbe, Kachelposition (noch freies Feld im Raster 6 x 9), Artenliste, Zuschlag
+  3. Standorte eintragen:  ST("Name", "Landschaft", Wasser, Nährstoffe, Wärme, {Besonderheiten}, "start_baumart", "Text")
+  4. python3 balancing.py   – prüft die Gewinnquote; Zuschlag anpassen, bis „solide“ im Standardspiel bei ca. 55–70 % liegt
+  5. python3 build_all.py   – erzeugt Edition-PDF, Karten, Übersicht, Tabellen
+  Eine neue Baumart gilt für alle Editionen: in core/arten.py ergänzen und in den Artenlisten der passenden Regionen eintragen.
+
+STRUKTUR
+  core/      BASISSATZ (gilt für alles): Baumarten, Ereignisse, Fachkarten, Konstanten
+  regions/   LOKALES: pro Region eine Datei (Kürzel, Farbe, typische Arten, Zuschlag, Standorte)
+             de/ at/ ch/ – Dateien, die mit "_" beginnen, werden nicht geladen
+
+KARTE DER VERBREITUNG
+  Statt langer Länder- und Bundeslisten zeigt die Kartenrückseite eine Kachelkarte (DACH, 31 Regionen, ein Quadrat je Region)
+  mit markierten Vorkommen, dazu Zählung je Land. Die Kachelpositionen stehen in den Regionsdateien (Feld "kachel").
+
+SCHWEIZ – REGIONSAUFTEILUNG (meine Einschätzung, an Wirtschafts-/Wuchsregionen angelehnt)
+  Jura · Mittelland · Voralpen & Nordalpen · Wallis (inneralpin trocken) · Graubünden · Südschweiz (Tessin)
+
+BILDER
+  Siehe Daten_und_Quellcode/bilder/LIESMICH.txt. Ohne Bilder erscheinen Platzhalter ("Foto folgt").
+
+HINWEISE ZUR QUALITÄT
+  * Alle Spielwerte (Standorte, Resistenzen, Artenzuordnung je Region) sind didaktisch vereinfachte Annahmen und sollten
+    von Forstfachleuten der jeweiligen Region geprüft werden.
+  * Die Gewinnquoten stammen aus Simulationen mit Modellstrategien, nicht aus Spieltests mit Auszubildenden.

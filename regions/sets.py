@@ -1,0 +1,12 @@
+# -*- coding: utf-8 -*-
+"""Baukasten für Artenlisten (nur Bequemlichkeit – jede Region darf auch IDs direkt auflisten)."""
+KERN = "buche traubeneiche stieleiche hainbuche winterlinde spitzahorn feldahorn vogelkirsche eberesche espe sandbirke esche fichte waldkiefer"
+AUE = "schwarzerle flatterulme schwarzpappel silberweide stieleiche esche hybridpappel"
+BERG = "fichte tanne bergahorn buche bergulme eberesche grauerle laerche eibe mehlbeere sommerlinde"
+HOCH = "fichte laerche eberesche bergahorn grauerle latsche"
+ALPIN = "zirbe latsche laerche eberesche grauerle fichte"
+SAND = "waldkiefer sandbirke stieleiche traubeneiche eberesche espe"
+MOOR = "moorbirke schwarzerle waldkiefer"
+WARM = "elsbeere speierling mehlbeere esskastanie traubeneiche feldahorn sommerlinde"
+GAST = "douglasie kuestentanne roteiche japanlaerche hybridlaerche hybridaspe resistente_esche"
+GAST_WARM = GAST + " robinie hybridnuss"
