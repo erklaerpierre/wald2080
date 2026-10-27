@@ -6,12 +6,20 @@ Die IDs stehen in quellen.csv (Spalte "id") und in daten_baumarten.csv.
 Format: Querformat, mindestens 1000 px breit. Das Programm schneidet mittig auf 59,4 x 42 mm (Karte)
 bzw. 26 x 12 mm (Etikett) zu und rechnet auf 300 dpi herunter. Ein Bild reicht für Karte UND Etikett.
 
-Lizenz: nur CC0, Public Domain, CC BY, CC BY-SA. Bei CC BY / CC BY-SA ist die Namensnennung Pflicht:
+Lizenz: CC0, Public Domain, CC BY, CC BY-SA, für den Lehrzweck auch CC BY-NC / BY-NC-SA (dann kein Verkauf
+des Materials). Keine ND-Lizenzen (Zuschneiden ist Bearbeitung). Bei CC-Lizenzen ist die Namensnennung Pflicht:
 Urheber und Lizenz in quellen.csv eintragen – sie erscheinen klein auf der Kartenrückseite und
 vollständig in 13_Bildquellen.pdf.
 
+Das Kartenbild zeigt immer den GANZEN BAUM (Habitus, möglichst frei stehend, belaubt, Querformat).
+
 Automatisch holen (auf einem Rechner mit Internet):   python3 bilder_holen.py
-Danach jedes Bild ansehen (richtige Art?) und in quellen.csv "geprueft" auf "ja" setzen.
+Danach jedes Bild ansehen (richtige Art? ganzer Baum?) und in quellen.csv "geprueft" auf "ja" setzen –
+geprüfte Bilder ersetzt das Skript nie. Bessere Kandidaten zeigt:   python3 bilder_holen.py --zeigen <id>
+
+Detailbilder (optional, noch nicht auf den Karten):   python3 bilder_holen.py --details
+  -> details/<id>_rinde.jpg, _blatt.jpg (Blätter/Nadeln), _frucht.jpg (Früchte/Samen/Zapfen), _bluete.jpg
+  Quellen und Lizenzen dazu in details/quellen.csv.
 
 Neu bauen:   python3 build_all.py
 Fehlt ein Bild, druckt die Karte einen Platzhalter ("Foto folgt").

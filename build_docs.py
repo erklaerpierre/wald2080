@@ -24,12 +24,12 @@ CELLB = ParagraphStyle("CB", parent=CELL, fontName="DVCB")
 BOXS = ParagraphStyle("BOX", parent=BODY, fontName="DV", fontSize=8.8, leading=12)
 
 
-def P(t, s=BODY): return Paragraph(t, s)
-def B(t): return Paragraph(t, BUL, bulletText="•")
+def P(t, s=BODY): return Paragraph(sym(t), s)
+def B(t): return Paragraph(sym(t), BUL, bulletText="•")
 
 
 def tbl(data, widths, head=True, zebra=True, font=CELL, hbg=GREEN):
-    rows = [[Paragraph(str(c), CELLB if (head and i == 0) else font) if not hasattr(c, "wrap") else c
+    rows = [[Paragraph(sym(str(c)), CELLB if (head and i == 0) else font) if not hasattr(c, "wrap") else c
              for c in r] for i, r in enumerate(data)]
     t = Table(rows, colWidths=[w * mm for w in widths], repeatRows=1 if head else 0)
     st = [("VALIGN", (0, 0), (-1, -1), "TOP"), ("GRID", (0, 0), (-1, -1), 0.3, hc("#CFD8DC")),
@@ -38,7 +38,7 @@ def tbl(data, widths, head=True, zebra=True, font=CELL, hbg=GREEN):
     if head:
         st += [("BACKGROUND", (0, 0), (-1, 0), hc(hbg))]
         for j in range(len(data[0])):
-            rows[0][j] = Paragraph(f'<font color="#FFFFFF">{data[0][j]}</font>', CELLB)
+            rows[0][j] = Paragraph(sym(f'<font color="#FFFFFF">{data[0][j]}</font>'), CELLB)
         t = Table(rows, colWidths=[w * mm for w in widths], repeatRows=1)
     if zebra:
         for i in range(1, len(data)):

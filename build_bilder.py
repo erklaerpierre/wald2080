@@ -34,8 +34,9 @@ def bildnachweis():
     doc.addPageTemplates([PageTemplate(id="p", frames=[Frame(10 * mm, 12 * mm, 277 * mm, 186 * mm, id="f", leftPadding=0, rightPadding=0,
                                                               topPadding=0, bottomPadding=0)], onPage=foot)])
     S = [P("Bildquellen und Lizenzen", H1),
-         P("Auf der Rückseite jeder Baumkarte steht ein frei lizenziertes Foto. Verwendet werden nur Bilder unter CC0, Public Domain, CC BY oder CC BY-SA. "
-           "Bei CC BY / CC BY-SA ist die Namensnennung Pflicht (steht klein auf der Karte; hier die vollständige Angabe). "
+         P("Auf der Rückseite jeder Baumkarte steht ein frei lizenziertes Foto. Verwendet werden nur Bilder unter CC0, Public Domain, CC BY, CC BY-SA oder – für den Lehrzweck – CC BY-NC(-SA). "
+           "Bilder mit NC-Lizenz schließen einen Verkauf des Spielmaterials aus. "
+           "Bei CC-Lizenzen ist die Namensnennung Pflicht (steht klein auf der Karte; hier die vollständige Angabe). "
            "Bilder legt man als <b>bilder/&lt;id&gt;.jpg</b> ab und trägt sie in <b>bilder/quellen.csv</b> ein – oder lädt sie mit <b>bilder_holen.py</b> automatisch.", SUB)]
     rows = [["ID", "Baumart", "Foto", "Urheber / Rechteinhaber", "Lizenz", "Quelle (Seite des Bildes)", "geprüft", "Suche"]]
     n_ok = 0

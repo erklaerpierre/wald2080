@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Je Region/Bundesland eine Edition: Steckbrief + Standortkarten als eigenes PDF (Ordner out/Editionen/)."""
-import os, re, sys, io
+import os, re, sys, io, tempfile
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lib import *
 from data import *
@@ -81,7 +81,7 @@ def steckbrief(r, bal, fn):
 
 def baue(r, bal):
     base = f'{r["land"]}_{r["code"]}_{slug(r["name"])}'
-    tmp1, tmp2 = f"/tmp/_{base}_a.pdf", f"/tmp/_{base}_b.pdf"
+    tmp1, tmp2 = (os.path.join(tempfile.gettempdir(), f"_{base}_{k}.pdf") for k in "ab")
     steckbrief(r, bal, tmp1)
     sts = [s for s in STANDORTE if s["reg"] == r["code"]]
     card_sheet(tmp2, [standort_card(s) for s in sts], MW, MH, 4, 4, title=f"Standortkarten {r['name']}",

@@ -81,7 +81,7 @@ def tree_card(sp):
         if sp["kat"] == "Züchtung":
             chips.append(("Züchtung", "#00897B"))
         for t, cc in chips:
-            wd = pdfmetrics.stringWidth(t, "DVCB", 5.4) / mm + 3
+            wd = breite(t, "DVCB", 5.4) / mm + 3
             cd.rect(ex, y + 3.2, wd, 3.5, fill=cc, r=1)
             cd.text(ex + wd / 2, y + 5.7, t, "DVCB", 5.4, "#FFFFFF", "c")
             ex += wd + 1.2
@@ -140,7 +140,7 @@ def standort_card(s):
         panel(cd, MW, MH, 12.5)
         size = 7.0
         lines = wrap(s["name"], "DVB", size, MW - 15)
-        while (len(lines) > 2 or any(pdfmetrics.stringWidth(l, "DVB", size) > (MW - 15) * mm for l in lines)) and size > 5.2:
+        while (len(lines) > 2 or any(breite(l, "DVB", size) > (MW - 15) * mm for l in lines)) and size > 5.2:
             size -= 0.3; lines = wrap(s["name"], "DVB", size, MW - 15)
         y0 = 6.4 if len(lines) == 1 else 4.9
         for i, ln in enumerate(lines[:2]):
@@ -164,7 +164,7 @@ def standort_card(s):
             mx = 17.5
             for k, v in mods.items():
                 t = f'{RES_NAMES[k].split("/")[0]} {v:+d}'.replace("-", "−")
-                wd = pdfmetrics.stringWidth(t, "DVCB", 5.0) / mm + 2.4
+                wd = breite(t, "DVCB", 5.0) / mm + 2.4
                 cd.rect(mx, 29.1, wd, 3.4, fill="#C62828" if v < 0 else "#2E7D32", r=0.9)
                 cd.text(mx + wd / 2, 31.6, t, "DVCB", 5.0, "#FFFFFF", "c")
                 mx += wd + 1

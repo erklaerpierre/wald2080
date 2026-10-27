@@ -307,7 +307,7 @@ def etiketten():
             cd.rect(0.8, 0.8, W - 1.6, H - 1.6, fill="#FFFFFF", r=0.8)
             size = 6.2
             ln = wrap(s["name"], "DVCB", size, W - 5)
-            while (len(ln) > 2 or any(pdfmetrics.stringWidth(l, "DVCB", size) > (W - 4.6) * mm for l in ln)) and size > 4.2:
+            while (len(ln) > 2 or any(breite(l, "DVCB", size) > (W - 4.6) * mm for l in ln)) and size > 4.2:
                 size -= 0.2; ln = wrap(s["name"], "DVCB", size, W - 5)
             y0 = 6.5 if len(ln) == 1 else 4.8
             for i, l in enumerate(ln[:2]): cd.text(2.2, y0 + i * 3.0, l, "DVCB", size, C_DARK)

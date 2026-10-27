@@ -20,6 +20,7 @@ jobs:
           cache: pip
 
       - name: Schrift und Python-Pakete installieren
+        # Atkinson Hyperlegible Next liegt in schrift/; DejaVu liefert nur die Symbole, die ihr fehlen (♥ ★ ✓ …)
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq fonts-dejavu-core

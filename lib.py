@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Gemeinsame Zeichenhilfen für Wald 2080 (reportlab)."""
+import os
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
 from reportlab.lib.colors import HexColor, white, black, Color
@@ -7,14 +8,56 @@ from reportlab.lib.pagesizes import A4, A3, landscape
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
-FD = "/usr/share/fonts/truetype/dejavu/"
-for name, f in [("DV", "DejaVuSans.ttf"), ("DVB", "DejaVuSans-Bold.ttf"), ("DVI", "DejaVuSans-Oblique.ttf"),
-                ("DVC", "DejaVuSansCondensed.ttf"), ("DVCB", "DejaVuSansCondensed-Bold.ttf"),
-                ("DVCI", "DejaVuSansCondensed-Oblique.ttf")]:
-    pdfmetrics.registerFont(TTFont(name, FD + f))
+# Schrift: Atkinson Hyperlegible Next (SIL OFL, liegt in schrift/). Die Kürzel DV/DVC stammen aus der
+# DejaVu-Zeit und bleiben, damit alle build_*.py unverändert laufen; eine Condensed-Variante gibt es nicht
+# mehr – Atkinson ist ohnehin schmaler als DejaVu Condensed.
+SCHRIFT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "schrift")
+AH = {s: os.path.join(SCHRIFT, f"AtkinsonHyperlegibleNext-{s}.ttf") for s in ("Regular", "Bold", "Italic", "BoldItalic")}
+for name, s in [("DV", "Regular"), ("DVB", "Bold"), ("DVI", "Italic"), ("DVBI", "BoldItalic"),
+                ("DVC", "Regular"), ("DVCB", "Bold"), ("DVCI", "Italic"), ("DVCBI", "BoldItalic")]:
+    pdfmetrics.registerFont(TTFont(name, AH[s]))
 from reportlab.pdfbase.pdfmetrics import registerFontFamily
-registerFontFamily("DV", normal="DV", bold="DVB", italic="DVI", boldItalic="DVB")
-registerFontFamily("DVC", normal="DVC", bold="DVCB", italic="DVCI", boldItalic="DVCB")
+registerFontFamily("DV", normal="DV", bold="DVB", italic="DVI", boldItalic="DVBI")
+registerFontFamily("DVC", normal="DVC", bold="DVCB", italic="DVCI", boldItalic="DVCBI")
+
+# Symbole, die Atkinson fehlt (♥ ★ ☆ ⚠ ✓ ✗ ▼ → …), kommen aus DejaVu Sans.
+_SYM_ORTE = ["/usr/share/fonts/truetype/dejavu", r"C:\Windows\Fonts",
+             os.path.join(os.environ.get("LOCALAPPDATA", ""), r"Microsoft\Windows\Fonts")]
+
+
+def _finde(datei):
+    for d in _SYM_ORTE:
+        if os.path.exists(os.path.join(d, datei)): return os.path.join(d, datei)
+    raise FileNotFoundError(f"{datei} nicht gefunden (Paket fonts-dejavu-core installieren)")
+
+
+pdfmetrics.registerFont(TTFont("SYM", _finde("DejaVuSans.ttf")))
+pdfmetrics.registerFont(TTFont("SYMB", _finde("DejaVuSans-Bold.ttf")))
+_HAT = set(pdfmetrics.getFont("DV").face.charToGlyph)
+
+
+def _sym_font(font):
+    return "SYMB" if "B" in font[2:] else "SYM"
+
+
+def laeufe(s, font):
+    """Zerlegt s in [(text, schrift), ...] – Zeichen, die Atkinson fehlen, bekommen die Symbolschrift."""
+    out = []
+    for ch in s:
+        f = font if (ord(ch) in _HAT or not font.startswith("DV")) else _sym_font(font)
+        if out and out[-1][1] == f: out[-1][0] += ch
+        else: out.append([ch, f])
+    return out
+
+
+def breite(s, font, size):
+    """Wie pdfmetrics.stringWidth, aber mit Symbol-Ersatz."""
+    return sum(pdfmetrics.stringWidth(t, f, size) for t, f in laeufe(s, font))
+
+
+def sym(markup):
+    """Für Paragraph-Markup: fehlende Zeichen in <font name="SYM"> einpacken."""
+    return "".join(c if ord(c) in _HAT or c in "<>&" or ord(c) < 128 else f'<font name="SYM">{c}</font>' for c in markup)
 
 # Farben
 C_DECK = {"basis": "#2E7D32", "nachbar": "#1565C0", "europa": "#E65100", "welt": "#6A1B9A"}
@@ -37,7 +80,7 @@ def wrap(text, font, size, maxw_mm):
     words, lines, cur = text.split(), [], ""
     for w in words:
         t = (cur + " " + w).strip()
-        if pdfmetrics.stringWidth(t, font, size) <= maxw_mm * mm:
+        if breite(t, font, size) <= maxw_mm * mm:
             cur = t
         else:
             if cur: lines.append(cur)
@@ -47,7 +90,7 @@ def wrap(text, font, size, maxw_mm):
 
 
 def fit_font(text, font, size, maxw_mm, minsize=5.0):
-    while size > minsize and pdfmetrics.stringWidth(text, font, size) > maxw_mm * mm:
+    while size > minsize and breite(text, font, size) > maxw_mm * mm:
         size -= 0.25
     return size
 
@@ -89,10 +132,11 @@ class Card:
     def text(self, x, y, s, font="DVC", size=7, color="#000000", align="l"):
         c = self.c
         c.saveState()
-        c.setFillColor(hc(color)); c.setFont(font, size)
-        if align == "l": c.drawString(self.X(x), self.Y(y), s)
-        elif align == "c": c.drawCentredString(self.X(x), self.Y(y), s)
-        else: c.drawRightString(self.X(x), self.Y(y), s)
+        c.setFillColor(hc(color))
+        px = self.X(x) - {"l": 0, "c": 0.5}.get(align, 1) * breite(s, font, size)
+        for t, f in laeufe(s, font):
+            c.setFont(f, size); c.drawString(px, self.Y(y), t)
+            px += pdfmetrics.stringWidth(t, f, size)
         c.restoreState()
 
     def para(self, x, y, s, font="DVC", size=6, color="#000000", maxw=50, lead=None, maxlines=99, align="l"):
